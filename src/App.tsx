@@ -20,4 +20,12 @@ const App = () => (
     </QueryClientProvider>
 );
 
-export default App;
+export default function App() {
+  return (
+    <Router>
+      <CartProvider>
+        <AppContent />
+      </CartProvider>
+    </Router>
+  );
+}
