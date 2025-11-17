@@ -26,32 +26,34 @@ export interface Category {
   image: string;
 }
 
-const mockImage = (id: number) => `https://images.pexels.com/photos/${5000 + id}/pexels-photo-${5000 + id}.jpeg?auto=compress&cs=tinysrgb&w=600`;
+// Using Unsplash for high-quality product images
+const mockImage = (category: string, seed: number) =>
+  `https://images.unsplash.com/photo-${seed}?w=800&h=800&fit=crop&auto=format`;
 
 export const categories: Category[] = [
   {
     id: '1',
     name: 'Bluzy',
     slug: 'hoodies',
-    image: mockImage(1),
+    image: 'https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=800&h=800&fit=crop&auto=format',
   },
   {
     id: '2',
     name: 'T-Shirty',
     slug: 't-shirts',
-    image: mockImage(2),
+    image: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=800&h=800&fit=crop&auto=format',
   },
   {
     id: '3',
     name: 'Spodnie',
     slug: 'pants',
-    image: mockImage(3),
+    image: 'https://images.unsplash.com/photo-1473966968600-fa801b869a1a?w=800&h=800&fit=crop&auto=format',
   },
   {
     id: '4',
     name: 'Akcesoria',
     slug: 'accessories',
-    image: mockImage(4),
+    image: 'https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=800&h=800&fit=crop&auto=format',
   },
 ];
 
@@ -61,7 +63,7 @@ export const products: Product[] = [
     name: 'Bluza Basic Black',
     price: 189,
     description: 'Klasyczna czarna bluza o minimalistycznym designie. Wykonana z najwyższej jakości bawełny, zapewnia maksymalny komfort noszenia przez cały dzień.',
-    image: mockImage(5),
+    image: 'https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=800&h=800&fit=crop&auto=format',
     category: 'hoodies',
     sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
     colors: ['Czarny', 'Biały', 'Szary'],
@@ -74,7 +76,7 @@ export const products: Product[] = [
     name: 'Bluza Oversize White',
     price: 219,
     description: 'Nowoczesna bluza o kroju oversize w czystym białym kolorze. Idealna do stylizacji casual i sportowych kombinacji.',
-    image: mockImage(6),
+    image: 'https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=800&h=800&fit=crop&auto=format',
     category: 'hoodies',
     sizes: ['M', 'L', 'XL', 'XXL'],
     colors: ['Biały', 'Beż', 'Szary'],
@@ -87,7 +89,7 @@ export const products: Product[] = [
     name: 'Bluza Hoodie Premium',
     price: 259,
     description: 'Luksusowa bluza z kapturem wykonana z premium materiału. Dodatkami są głębokie kieszenie i regulowana sznurek.',
-    image: mockImage(7),
+    image: 'https://images.unsplash.com/photo-1578587018452-892bacefd3f2?w=800&h=800&fit=crop&auto=format',
     category: 'hoodies',
     sizes: ['S', 'M', 'L', 'XL'],
     colors: ['Czarny', 'Granatowy'],
@@ -100,7 +102,7 @@ export const products: Product[] = [
     name: 'T-Shirt Essential',
     price: 79,
     description: 'Podstawowa koszulka wykonana z czystej bawełny. Uniwersalna i wygodna, idealna na każdą okazję.',
-    image: mockImage(8),
+    image: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=800&h=800&fit=crop&auto=format',
     category: 't-shirts',
     sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
     colors: ['Czarny', 'Biały', 'Szary', 'Granatowy', 'Beż'],
@@ -113,7 +115,7 @@ export const products: Product[] = [
     name: 'T-Shirt Vintage',
     price: 99,
     description: 'Stylowa koszulka w stylu vintage z oryginalnym printem. Krótkiego rękawa, wykonana z komfortowego materiału.',
-    image: mockImage(9),
+    image: 'https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=800&h=800&fit=crop&auto=format',
     category: 't-shirts',
     sizes: ['S', 'M', 'L', 'XL'],
     colors: ['Biały', 'Beż', 'Khaki'],
@@ -126,7 +128,7 @@ export const products: Product[] = [
     name: 'Spodnie Slim Fit',
     price: 199,
     description: 'Eleganckie spodnie dopasowane, idealne zarówno do pracy jak i wyjścia. Wykonane z trwałego materiału.',
-    image: mockImage(10),
+    image: 'https://images.unsplash.com/photo-1473966968600-fa801b869a1a?w=800&h=800&fit=crop&auto=format',
     category: 'pants',
     sizes: ['28', '30', '32', '34', '36', '38'],
     colors: ['Czarny', 'Granatowy', 'Szary'],
@@ -139,7 +141,7 @@ export const products: Product[] = [
     name: 'Spodnie Jogger',
     price: 139,
     description: 'Wygodne spodnie joggerów z kieszonkami. Idealne do sportowych stylizacji i codziennego noszenia.',
-    image: mockImage(11),
+    image: 'https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=800&h=800&fit=crop&auto=format',
     category: 'pants',
     sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
     colors: ['Czarny', 'Szary', 'Khaki'],
@@ -152,7 +154,7 @@ export const products: Product[] = [
     name: 'Czapka Minimal',
     price: 49,
     description: 'Minimalistyczna czapka baseballowa z regulowanym paskiem. Nowoczesny design w czystych kolorach.',
-    image: mockImage(12),
+    image: 'https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=800&h=800&fit=crop&auto=format',
     category: 'accessories',
     sizes: ['One Size'],
     colors: ['Czarny', 'Biały', 'Szary'],
@@ -165,7 +167,7 @@ export const products: Product[] = [
     name: 'Bluza Zip-Up Black',
     price: 299,
     description: 'Premium bluza na zamek z pewnością będzie hitem Twojej garderoby. Wysokiej jakości materiał i wykończenie.',
-    image: mockImage(13),
+    image: 'https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=800&h=800&fit=crop&auto=format',
     category: 'hoodies',
     sizes: ['S', 'M', 'L', 'XL'],
     colors: ['Czarny'],
