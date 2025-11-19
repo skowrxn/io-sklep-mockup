@@ -3,14 +3,20 @@ import { useSearchParams } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { CheckCircle } from "lucide-react";
+import { useCart } from "../context/CartContext";
 
 const Success = () => {
     const [searchParams] = useSearchParams();
     const sessionId = searchParams.get("session_id");
+    const { clearCart } = useCart();
 
     useEffect(() => {
         console.log("Payment successful! Session ID:", sessionId);
-    }, [sessionId]);
+        // Wyczyść koszyk po udanej płatności
+        clearCart();
+        // Wyczyść zapisane dane formularza
+        localStorage.removeItem('checkoutFormData');
+    }, [sessionId, clearCart]);
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-neutral-50 p-4">

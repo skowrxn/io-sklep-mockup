@@ -2,13 +2,16 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, Check } from 'lucide-react';
 import { useCart } from '../context/CartContext';
+import { useToast } from '@/hooks/use-toast';
 
 export function CheckoutPage() {
   const navigate = useNavigate();
   const { items, getTotal, clearCart } = useCart();
+  const { toast } = useToast();
 
   const [step, setStep] = useState(1);
   const [orderCompleted, setOrderCompleted] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
     firstName: '',
@@ -66,13 +69,77 @@ export function CheckoutPage() {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handlePlaceOrder = () => {
+  const handlePlaceOrder = async () => {
     if (!formData.email || !formData.firstName || !formData.lastName || !formData.street || !formData.city || !formData.zipCode) {
-      alert('Proszę wypełnić wszystkie pola');
+      toast({
+        title: 'Błąd formularza',
+        description: 'Proszę wypełnić wszystkie wymagane pola',
+        variant: 'destructive',
+      });
       return;
     }
-    setOrderCompleted(true);
-    clearCart();
+
+    setLoading(true);
+
+    try {
+      const apiBase = (import.meta.env.VITE_API_BASE as string) || 'http://localhost:3001';
+      const endpoint = `${apiBase}/create-checkout-session`;
+
+      // Przygotuj dane produktów z koszyka
+      const stripeItems = items.map(item => ({
+        name: item.name,
+        price: item.price,
+        quantity: item.quantity,
+        description: `${item.selectedSize} / ${item.selectedColor}`,
+      }));
+
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          items: stripeItems,
+        }),
+      });
+
+      if (!response.ok) {
+        const errText = await response.text();
+        throw new Error(`Server error: ${response.status} ${errText}`);
+      }
+
+      const data = await response.json();
+
+      if (data?.url) {
+        // Zapisz dane formularza w localStorage przed przekierowaniem
+        localStorage.setItem('checkoutFormData', JSON.stringify(formData));
+
+        // Przekieruj do Stripe Checkout
+        window.location.href = data.url;
+        return;
+      }
+
+      throw new Error('No checkout URL received from server');
+    } catch (error) {
+      let errorMessage = 'Nie udało się utworzyć sesji płatności. Spróbuj ponownie.';
+
+      if (error instanceof Error) {
+        if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
+          errorMessage = 'Nie można połączyć się z serwerem. Upewnij się, że backend jest uruchomiony (npm run server).';
+        } else if (error.message.includes('Server error')) {
+          errorMessage = error.message;
+        }
+      }
+
+      toast({
+        title: 'Błąd płatności',
+        description: errorMessage,
+        variant: 'destructive',
+      });
+      console.error('Payment error:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const total = getTotal();
@@ -284,9 +351,10 @@ export function CheckoutPage() {
 
                 <button
                   onClick={handlePlaceOrder}
-                  className="w-full px-6 py-4 bg-green-600 text-white rounded-xl font-semibold hover:bg-green-700 transition-all text-lg"
+                  disabled={loading}
+                  className="w-full px-6 py-4 bg-green-600 text-white rounded-xl font-semibold hover:bg-green-700 transition-all text-lg disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Potwierdź zamówienie
+                  {loading ? 'Przekierowywanie do płatności...' : 'Przejdź do płatności Stripe'}
                 </button>
               </div>
             )}
